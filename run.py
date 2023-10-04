@@ -1,5 +1,6 @@
+import requests
 from flask import Flask, render_template, request, redirect, send_file
-from scrapper import extract_Status
+from scrapper import extract_Status, get_product_status
 
 app = Flask(__name__)
 
@@ -35,6 +36,14 @@ def report():
         rslt_list=rslt_list
     )
     # report.html에 각각의 값을 넘겨준다. render
+
+
+@app.route("/test", methods=['GET', 'POST'])
+def test():
+    endpoint = request.args.get('endpoint')
+
+    print("fist : " + endpoint)
+    return get_product_status(endpoint)
 
 
 if __name__ == '__main__':
