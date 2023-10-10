@@ -34,8 +34,9 @@ def extract_Status(html):
 #     return jobs
 
 
-def get_product_status(endpoint):
-    asisUrl = f"https://www.gsshop.com/shop/sect/sectM.gs?sectid={endpoint}"
+def get_product_status(param_list):
+    asisUrl = f"https://www.gsshop.com/shop/sect/sectM.gs?sectid={param_list[0]}&lsectid={param_list[1]}&msectid={param_list[2]}&lseq={param_list[3]}&gsid={param_list[4]}"
+    print("asisUrl : " + asisUrl)
     # tobeUrl = parse.urlparse(asisUrl)
     # query = parse.parse_qs(tobeUrl.query)
     # result = parse.urlencode(query, doseq=True)
