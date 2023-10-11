@@ -50,10 +50,20 @@ def get_product_status(param_list):
 
 
 def get_last_page(url):
-    result = requests.get(url)
-    soup = BeautifulSoup(result.text, "html.parser")
-    pages = soup.find("nav", {"class": "paging"}).find("a", "data-index")
-    print("pages : " + pages)
-    return pages
+    a = urlopen(url)
+    soup = BeautifulSoup(a.read(), 'html.parser')
+    buttonTags = soup.find_all('button', 'link-new-tab')
+    for i in buttonTags:
+        print('tag : ' + str(i)[i.find("onclick="):i.find("창")])
+    # buttonList = buttonTag.split(',')
+
+    # print(soup.find_all('button', 'link-new-tab'))
+
+    # result = requests.get(url)
+    # soup = BeautifulSoup(result.text, "html.parser")
+    # pages = soup.find('div', {'class': 'prd-img'})
+    # print("pages : " + str(pages))
+
+    # return pages
     # last_page = len(pages)
     # return int(last_page)

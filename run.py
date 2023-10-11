@@ -42,6 +42,7 @@ def report():
     # report.html에 각각의 값을 넘겨준다. render
 
 
+# 카테고리 한페이지
 @app.route("/test", methods=['GET', 'POST'])
 def test():
     param_list = []
