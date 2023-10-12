@@ -35,26 +35,28 @@ def extract_Status(html):
 
 
 def get_product_status(param_list):
-    asisUrl = f"https://www.gsshop.com/shop/sect/sectM.gs?sectid={param_list[0]}&lsectid={param_list[1]}&msectid={param_list[2]}&lseq={param_list[3]}&gsid={param_list[4]}"
-    print("asisUrl : " + asisUrl)
-    # tobeUrl = parse.urlparse(asisUrl)
-    # query = parse.parse_qs(tobeUrl.query)
-    # result = parse.urlencode(query, doseq=True)
-    # print("asisUrl : " + asisUrl)
-    # print("tobeUrl : " + tobeUrl)
+    # 메인 카테고리
+    mainUrl = f"https://www.gsshop.com/shop/sect/sectM.gs?sectid={param_list[0]}&lsectid={param_list[1]}&msectid={param_list[2]}&lseq={param_list[3]}&gsid={param_list[4]}"
+    print("mainUrl : " + mainUrl)
 
-    last_page = get_last_page(asisUrl)
-    return last_page
+    detailUrl = get_detail_status(mainUrl)
+    return detailUrl
     # jobs = extract_jobs(last_page, url)
     # return jobs
 
 
-def get_last_page(url):
+def get_detail_status(url):
     a = urlopen(url)
     soup = BeautifulSoup(a.read(), 'html.parser')
     buttonTags = soup.find_all('button', 'link-new-tab')
     for i in buttonTags:
-        print('tag : ' + str(i)[i.find("onclick="):i.find("창")])
+        orginStr = str(i)
+        index1 = int(str(orginStr.find("https")))
+        index2 = int(str(orginStr.find("§id")))
+        detailUrl = orginStr[index1:index2]
+        print('detail url : ' + detailUrl)
+        return detailUrl
+
     # buttonList = buttonTag.split(',')
 
     # print(soup.find_all('button', 'link-new-tab'))
