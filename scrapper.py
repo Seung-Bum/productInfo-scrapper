@@ -4,58 +4,57 @@ from urllib import parse
 from urllib.request import urlopen
 
 
-def extract_Status(html):
-    a = urlopen(html)
+# 상품 url을 받아서 상품의 타이틀과 상태를 리턴한다.
+def extract_Status(url):
+    print("- extract_Status START")
+    a = urlopen(url)
     soup = BeautifulSoup(a.read(), 'html.parser')
 
     title = soup.find("p", "product-title").text
-    print("title : " + title)
+    print("  .title : " + title)
 
     status = soup.find("span", "gs-btn red color-only gient").text
-    print("status : " + status)
+    print("  .status : " + status)
 
     return {
         'title': title,
         'status': status,
-        'link': html
+        'link': url
     }
 
 
-# def extract_jobs(last_page, url):
-#     jobs = []
-#     for page in range(last_page):
-#         print(f"Scrapping: page: {page}")
-#         result = requests.get(f"{url}{page+1}")
-#         soup = BeautifulSoup(result.text, "html.parser")
-#         results = soup.find_all("div", {"class": "grid--cell fl1"})
-#         for result in results:
-#             job = extract_job(result)
-#             jobs.append(job)
-#     return jobs
-
-
 def get_product_status(param_list):
+    print("- get_product_status START")
+
     # 메인 카테고리
     mainUrl = f"https://www.gsshop.com/shop/sect/sectM.gs?sectid={param_list[0]}&lsectid={param_list[1]}&msectid={param_list[2]}&lseq={param_list[3]}&gsid={param_list[4]}"
-    print("mainUrl : " + mainUrl)
+    print("  .mainUrl : " + mainUrl)
 
-    detailUrl = get_detail_status(mainUrl)
-    return detailUrl
-    # jobs = extract_jobs(last_page, url)
-    # return jobs
+    detailList = get_detail_product(mainUrl)
+    return detailList
 
 
-def get_detail_status(url):
+def get_detail_product(url):
+    print("- get_detail_status STRAT")
+    rsltList = []
     a = urlopen(url)
     soup = BeautifulSoup(a.read(), 'html.parser')
     buttonTags = soup.find_all('button', 'link-new-tab')
+    print('  .buttonTags len : ' + str(len(buttonTags)))
+
+    idx = 0
     for i in buttonTags:
+        idx += 1
         orginStr = str(i)
         index1 = int(str(orginStr.find("https")))
         index2 = int(str(orginStr.find("§id")))
         detailUrl = orginStr[index1:index2]
-        print('detail url : ' + detailUrl)
-        return detailUrl
+        rsltStatus = extract_Status(detailUrl)
+        print(str(idx) + ". ")
+        print(rsltStatus)
+        rsltList.append(rsltStatus)
+
+    return rsltList
 
     # buttonList = buttonTag.split(',')
 
@@ -69,3 +68,16 @@ def get_detail_status(url):
     # return pages
     # last_page = len(pages)
     # return int(last_page)
+
+
+# def extract_jobs(last_page, url):
+#     jobs = []
+#     for page in range(last_page):
+#         print(f"Scrapping: page: {page}")
+#         result = requests.get(f"{url}{page+1}")
+#         soup = BeautifulSoup(result.text, "html.parser")
+#         results = soup.find_all("div", {"class": "grid--cell fl1"})
+#         for result in results:
+#             job = extract_job(result)
+#             jobs.append(job)
+#     return jobs

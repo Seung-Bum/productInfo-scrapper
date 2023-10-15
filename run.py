@@ -44,7 +44,8 @@ def report():
 
 # 카테고리 한페이지
 @app.route("/test", methods=['GET', 'POST'])
-def test():
+def productAllExtract():
+    print("- productAllExtract START")
     param_list = []
     sectid = {}
 
@@ -64,7 +65,12 @@ def test():
     print("msectid : " + sectid["msectid"])
     print("lseq : " + sectid["lseq"])
     print("gsid : " + sectid["gsid"])
-    return get_product_status(param_list)
+    detailList = get_product_status(param_list)
+    print("  .productAllExtract detailList complete, html render start")
+    return render_template(
+        "report.html",
+        rslt_list=detailList
+    )
 
 
 # @app은 아래 설정보다 위에 있어야 작동함
