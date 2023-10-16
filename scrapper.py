@@ -4,25 +4,6 @@ from urllib import parse
 from urllib.request import urlopen
 
 
-# 상품 url을 받아서 상품의 타이틀과 상태를 리턴한다.
-def extract_Status(url):
-    print("- extract_Status START")
-    a = urlopen(url)
-    soup = BeautifulSoup(a.read(), 'html.parser')
-
-    title = soup.find("p", "product-title").text
-    print("  .title : " + title)
-
-    status = soup.find("span", "gs-btn red color-only gient").text
-    print("  .status : " + status)
-
-    return {
-        'title': title,
-        'status': status,
-        'link': url
-    }
-
-
 def get_product_status(param_list):
     print("- get_product_status START")
 
@@ -30,8 +11,20 @@ def get_product_status(param_list):
     mainUrl = f"https://www.gsshop.com/shop/sect/sectM.gs?sectid={param_list[0]}&lsectid={param_list[1]}&msectid={param_list[2]}&lseq={param_list[3]}&gsid={param_list[4]}"
     print("  .mainUrl : " + mainUrl)
 
-    detailList = get_detail_product(mainUrl)
-    return detailList
+    # pageNavigation
+    paging = []
+    a = urlopen(mainUrl)
+    soup = BeautifulSoup(a.read(), 'html.parser')
+    paging = soup.find_all('nav', 'paging')
+    print(paging)
+    # for i in paging:
+    #   print('paging : ' + str(paging[i]))
+
+    # 다음 내용을 base64 인코딩 후 endpoint로 붙임
+    # {"pageNumber":2,"selected":"opt-page"}7
+
+    # detailList = get_detail_product(mainUrl)
+    # return detailList
 
 
 def get_detail_product(url):
@@ -49,12 +42,31 @@ def get_detail_product(url):
         index1 = int(str(orginStr.find("https")))
         index2 = int(str(orginStr.find("§id")))
         detailUrl = orginStr[index1:index2]
-        rsltStatus = extract_Status(detailUrl)
+        rsltStatus = extract_Status(detailUrl, idx)
         print(str(idx) + ". ")
         print(rsltStatus)
         rsltList.append(rsltStatus)
-
     return rsltList
+
+
+# 상품 url을 받아서 상품의 타이틀과 상태를 리턴한다.
+def extract_Status(url, idx):
+    print("- extract_Status START")
+    a = urlopen(url)
+    soup = BeautifulSoup(a.read(), 'html.parser')
+
+    title = soup.find("p", "product-title").text
+    print("  .title : " + title)
+
+    status = soup.find("span", "gs-btn red color-only gient").text
+    print("  .status : " + status)
+
+    return {
+        'idx': idx,
+        'title': title,
+        'status': status,
+        'link': url
+    }
 
     # buttonList = buttonTag.split(',')
 

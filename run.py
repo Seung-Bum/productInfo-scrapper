@@ -65,6 +65,7 @@ def productAllExtract():
     print("msectid : " + sectid["msectid"])
     print("lseq : " + sectid["lseq"])
     print("gsid : " + sectid["gsid"])
+
     detailList = get_product_status(param_list)
     print("  .productAllExtract detailList complete, html render start")
     return render_template(
