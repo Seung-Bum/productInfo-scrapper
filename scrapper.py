@@ -15,8 +15,11 @@ def get_product_status(param_list):
     paging = []
     a = urlopen(mainUrl)
     soup = BeautifulSoup(a.read(), 'html.parser')
-    paging = soup.find_all('nav', 'paging')
-    print(paging)
+    attr = soup.select('a')
+
+    # 호출을 그냥 최대 페이지까지 하고 그다음 페이지도 추출했을때 예외가 생기면 그예외 받고 끝내기 무한루프? 로 해보기
+    for i in attr:
+        print(i)
     # for i in paging:
     #   print('paging : ' + str(paging[i]))
 
