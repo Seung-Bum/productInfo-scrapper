@@ -1,55 +1,28 @@
-import requests
-from flask import Flask, render_template, request, redirect, send_file
-from scrapper import extract_Status, get_product_status
-from urllib import parse
+from flask import Flask, render_template, request
+from scrapper import productInfoExtract
+
+
+# * 테스트 api 예시
+#   린스 페이지 - http://localhost:5000/extract?param=1661646~1660624~1661646~404868~Sect-1661647-0-1
+#
+# * 403 ERROR -The request could not be satisfied.
+#   위의 애러가 발생한 경우 GS홈쇼핑 페이지 크롤링 하다가 차단된 것임
+#   시간이 지나면 차단된 것이 풀린다.
+
 
 app = Flask(__name__)
 
-# @app.route('/')
-# def home():
-#     return 'This is home!'
-
-
-@app.route("/")
-def home():
-    return render_template("home.html")
-
-
-# 페이지 하나의 결과를 추출하는 메서드
-@app.route("/report")
-def report():
-    rslt_list = []
-
-    # 사용자가 검색한 값 (파라미터(상품아이디)), request에 담겨서 전달됨
-    prdid = request.args.get('prdid')
-
-    if prdid:
-        html = 'https://www.gsshop.com/prd/prd.gs?prdid=' + prdid
-        print('html : ' + html)
-
-        # 상품 상태값 추출 (바로구매, 품절)
-        rslt_dict = extract_Status(html)
-        print(rslt_dict)
-
-        # 결과들을 dict에 담아서 전달
-        rslt_list.append(rslt_dict)
-    else:
-        return redirect("/")
-    return render_template(
-        "report.html",
-        rslt_list=rslt_list
-    )
-    # report.html에 각각의 값을 넘겨준다. render
-
 
 # 카테고리 한페이지
-@app.route("/test", methods=['GET', 'POST'])
+# sectid만 필요할듯함
+@app.route("/extract", methods=['GET', 'POST'])
 def productAllExtract():
-    print("- productAllExtract START")
+    print("- productAllExtract START ---------------------------------")
+    product_info_extract = productInfoExtract()
     param_list = []
     sectid = {}
 
-    # 자동으로 url 인코딩이 안되는 '-'를 구분자로 넣어 파라미터 넘김
+    # 자동으로 url 인코딩이 안되는 '~'를 구분자로 넣어 파라미터 넘김
     param = request.args.get('param')
     splitParam = str(param).split("~")
     sectid["sectid"] = splitParam[0]
@@ -60,14 +33,16 @@ def productAllExtract():
     param_list.extend([sectid["sectid"], sectid["lsectid"],
                       sectid["msectid"], sectid["lseq"], sectid["gsid"]])
 
-    print("sectid : " + sectid["sectid"])
-    print("lsectid : " + sectid["lsectid"])
-    print("msectid : " + sectid["msectid"])
-    print("lseq : " + sectid["lseq"])
-    print("gsid : " + sectid["gsid"])
+    print("  .sectid : " + sectid["sectid"])
+    print("  .lsectid : " + sectid["lsectid"])
+    print("  .msectid : " + sectid["msectid"])
+    print("  .lseq : " + sectid["lseq"])
+    print("  .gsid : " + sectid["gsid"])
 
-    detailList = get_product_status(param_list)
-    print("  .productAllExtract detailList complete, html render start")
+    # 리스트안에 리스트 담김
+    detailList = product_info_extract.get_product_status(param_list)
+
+    print("  .productAllExtract end ---------------------------------")
     return render_template(
         "report.html",
         rslt_list=detailList
@@ -77,3 +52,12 @@ def productAllExtract():
 # @app은 아래 설정보다 위에 있어야 작동함
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
+
+
+# @app.route('/')
+# def home():
+#     return 'This is home!'
+
+# @app.route("/")
+# def home():
+#     return render_template("home.html")
