@@ -1,3 +1,4 @@
+import time
 from flask import Flask, render_template, request
 from scrapper import productInfoExtract
 
@@ -17,15 +18,16 @@ app = Flask(__name__)
 @app.route("/extract", methods=['GET', 'POST'])
 def productAllExtract():
     print("- productAllExtract START ---------------------------------")
+    start = time.time()
     product_info_extract = productInfoExtract()
-    sectid = ""
-
     sectid = request.args.get('sectid')
     print("  .sectid : " + sectid)
 
     title = product_info_extract.get_title(sectid)
     detailList = product_info_extract.get_product_status(sectid)
+    end = time.time()
     print("- productAllExtract end ---------------------------------")
+    print(f"{end - start:.5f} sec")
     return render_template(
         "report.html",
         title=title,
