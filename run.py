@@ -13,38 +13,22 @@ from scrapper import productInfoExtract
 app = Flask(__name__)
 
 
-# 카테고리 한페이지
-# sectid만 필요할듯함
+# 카테고리당 한페이지로 sectid만 필요할듯함
 @app.route("/extract", methods=['GET', 'POST'])
 def productAllExtract():
     print("- productAllExtract START ---------------------------------")
     product_info_extract = productInfoExtract()
-    param_list = []
-    sectid = {}
+    sectid = ""
 
-    # 자동으로 url 인코딩이 안되는 '~'를 구분자로 넣어 파라미터 넘김
-    param = request.args.get('param')
-    splitParam = str(param).split("~")
-    sectid["sectid"] = splitParam[0]
-    sectid["lsectid"] = splitParam[1]
-    sectid["msectid"] = splitParam[2]
-    sectid["lseq"] = splitParam[3]
-    sectid["gsid"] = splitParam[4]
-    param_list.extend([sectid["sectid"], sectid["lsectid"],
-                      sectid["msectid"], sectid["lseq"], sectid["gsid"]])
+    sectid = request.args.get('sectid')
+    print("  .sectid : " + sectid)
 
-    print("  .sectid : " + sectid["sectid"])
-    print("  .lsectid : " + sectid["lsectid"])
-    print("  .msectid : " + sectid["msectid"])
-    print("  .lseq : " + sectid["lseq"])
-    print("  .gsid : " + sectid["gsid"])
-
-    # 리스트안에 리스트 담김
-    detailList = product_info_extract.get_product_status(param_list)
-
-    print("  .productAllExtract end ---------------------------------")
+    title = product_info_extract.get_title(sectid)
+    detailList = product_info_extract.get_product_status(sectid)
+    print("- productAllExtract end ---------------------------------")
     return render_template(
         "report.html",
+        title=title,
         rslt_list=detailList
     )
 
