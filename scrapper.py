@@ -31,7 +31,7 @@ class productInfoExtract:
         # soup = BeautifulSoup(a.read(), 'html.parser')
         title = soup.find('h2', 'shop-title')
         title = title.text.replace("\n", "")
-        print("  .title : " + title)
+        print("  .title : " + str(title))
         return title
 
     def get_product_status(self, sectid):

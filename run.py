@@ -1,5 +1,5 @@
 import time
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, request, redirect
 from scrapper import productInfoExtract
 
 
@@ -14,20 +14,28 @@ from scrapper import productInfoExtract
 app = Flask(__name__)
 
 
-# 카테고리당 한페이지로 sectid만 필요할듯함
-@app.route("/extract", methods=['GET', 'POST'])
+@app.route("/")
+def home():
+    return render_template("home.html")
+
+
+# 카테고리당 한페이지로 sectid만 필요할듯함 , methods=['GET', 'POST']
+@app.route("/extract")
 def productAllExtract():
     print("- productAllExtract START ---------------------------------")
     start = time.time()
-    product_info_extract = productInfoExtract()
     sectid = request.args.get('sectid')
-    print("  .sectid : " + sectid)
-
-    title = product_info_extract.get_title(sectid)
-    detailList = product_info_extract.get_product_status(sectid)
+    product_info_extract = productInfoExtract()
+    if sectid:
+        print("  .sectid : " + str(sectid))
+        title = product_info_extract.get_title(sectid)
+        detailList = product_info_extract.get_product_status(sectid)
+    else:
+        print("  .sectid : NONE")
+        return redirect("/")
     end = time.time()
     print("- productAllExtract end ---------------------------------")
-    print(f"{end - start:.5f} sec")
+    print(f"{end - start:.2f} sec")
     return render_template(
         "report.html",
         title=title,
@@ -44,6 +52,7 @@ if __name__ == '__main__':
 # def home():
 #     return 'This is home!'
 
-# @app.route("/")
-# def home():
-#     return render_template("home.html")
+# @app.route("/report")
+# def report():
+#   #사용자가 검색한 값 (파라미터), request에 담겨서 전달됨
+#   word = request.args.get('word')
