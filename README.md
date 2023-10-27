@@ -1,6 +1,7 @@
 # productInfo-scrapper
 
 ** gsshop의 품절 상품 체크
+
   - 품절은 [바로 구매] 버튼 문구 대신 [품절]이라고 나옴
 
 * 상품링크
