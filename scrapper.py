@@ -39,7 +39,7 @@ class productInfoExtract:
         # a = urlopen(mainUrl)
         # soup = BeautifulSoup(a.read(), 'html.parser')
         title = soup.find('h2', 'shop-title')
-        title = title.text.replace("\n", "")
+        # title = title.text.replace("\n", "")
         print("  .title : " + title)
         return title
 
