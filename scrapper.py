@@ -14,6 +14,7 @@ class productInfoExtract:
 
     # 상품 개별 index(get_detail_product에서 증가)
     idx = 0
+    headers = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36'
 
     def __init__(self):
         self.str = ""
@@ -29,17 +30,19 @@ class productInfoExtract:
         return result
 
     def get_title(self, sectid):
-        mainUrl = f"http://www.gsshop.com/shop/sect/sectM.gs?sectid={sectid}&eh=eyJwYWdlTnVtYmVyIjoxLCJzZWxlY3RlZCI6Im9wdC1wYWdlIn0="
+        mainUrl = f"https://www.gsshop.com/shop/sect/sectM.gs?sectid={sectid}&eh=eyJwYWdlTnVtYmVyIjoxLCJzZWxlY3RlZCI6Im9wdC1wYWdlIn0="
         print("  .mainUrl : " + mainUrl)
         # headers = {"User-agent": random.choice(self.UA_DESKTOP)}
-        time.sleep(random.uniform(1, 5))
-        req = requests.get(mainUrl, verify=False)
-        soup = BeautifulSoup(req.text, "lxml")  # html에 대하여 접근할 수 있도록
+        headers = {"User-agent": self.headers}
+        time.sleep(random.uniform(1, 3))
+        req = requests.get(mainUrl, headers=headers)
+        soup = BeautifulSoup(req.text, 'html.parser')  # html에 대하여 접근할 수 있도록
 
         # a = urlopen(mainUrl)
         # soup = BeautifulSoup(a.read(), 'html.parser')
         title = soup.find('h2', 'shop-title')
-        # title = title.text.replace("\n", "")
+        title = title.text.replace("\n", "")
+        title = str(title)
         print("  .title : " + title)
         return title
 
@@ -49,7 +52,7 @@ class productInfoExtract:
         page = "{\"pageNumber\":var,\"selected\": \"opt-page\"}"
 
         # sectid를 param로 받음, 상품 카테고리마다 다르다
-        subUrl = f"http://www.gsshop.com/shop/sect/sectM.gs?sectid={sectid}&eh="
+        subUrl = f"https://www.gsshop.com/shop/sect/sectM.gs?sectid={sectid}&eh="
 
         # 전체 페이지 loop(최대 100페이지 까지만 parsing)
         for i in range(1, 101):
@@ -80,7 +83,8 @@ class productInfoExtract:
         rsltList = []
 
         time.sleep(random.uniform(1, 5))
-        req = requests.get(url, verify=False)
+        headers = {"User-agent": self.headers}
+        req = requests.get(url, headers=headers, verify=False)
         soup = BeautifulSoup(req.text, "lxml")  # html에 대하여 접근할 수 있도록
 
         # a = urlopen(url)
@@ -109,7 +113,8 @@ class productInfoExtract:
         print("- extract_Status START")
 
         time.sleep(random.uniform(1, 5))
-        req = requests.get(url, verify=False)
+        headers = {"User-agent": self.headers}
+        req = requests.get(url, headers=headers, verify=False)
         soup = BeautifulSoup(req.text, "lxml")  # html에 대하여 접근할 수 있도록
 
         # a = urlopen(url)
