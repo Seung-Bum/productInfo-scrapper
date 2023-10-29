@@ -14,18 +14,6 @@ class productInfoExtract:
 
     # 상품 개별 index(get_detail_product에서 증가)
     idx = 0
-    UA_DESKTOP = [
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246",
-        "Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.64 Safari/537.36",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/601.3.9 (KHTML, like Gecko) Version/9.0.2 Safari/601.3.9",
-        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36",
-        "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:15.0) Gecko/20100101 Firefox/15.0.1",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36 Edg/99.0.1150.36",
-        "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko",
-        "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:99.0) Gecko/20100101 Firefox/99.0",
-    ]
 
     def __init__(self):
         self.str = ""
@@ -43,13 +31,9 @@ class productInfoExtract:
     def get_title(self, sectid):
         mainUrl = f"http://www.gsshop.com/shop/sect/sectM.gs?sectid={sectid}&eh=eyJwYWdlTnVtYmVyIjoxLCJzZWxlY3RlZCI6Im9wdC1wYWdlIn0="
         print("  .mainUrl : " + mainUrl)
-        # ua = UserAgent()
-        headers = {"User-agent": random.choice(self.UA_DESKTOP)}
-        req = requests.get(mainUrl, headers=headers, verify=False)
+        # headers = {"User-agent": random.choice(self.UA_DESKTOP)}
+        req = requests.get(mainUrl, verify=False)
         soup = BeautifulSoup(req.text, "lxml")  # html에 대하여 접근할 수 있도록
-
-        # req = requests.get(mainUrl)
-        # soup = BeautifulSoup(req.text, "html.parser")
 
         # a = urlopen(mainUrl)
         # soup = BeautifulSoup(a.read(), 'html.parser')
@@ -93,13 +77,8 @@ class productInfoExtract:
     def get_detail_product(self, url):
         print("- get_detail_status STRAT")
         rsltList = []
-        # ua = UserAgent()
-        headers = {"User-agent": random.choice(self.UA_DESKTOP)}
-        req = requests.get(url, headers=headers, verify=False)
+        req = requests.get(url, verify=False)
         soup = BeautifulSoup(req.text, "lxml")  # html에 대하여 접근할 수 있도록
-
-        # req = requests.get(url, verify=False)
-        # soup = BeautifulSoup(req.text, "html.parser")
 
         # a = urlopen(url)
         # soup = BeautifulSoup(a.read(), 'html.parser')
@@ -126,13 +105,9 @@ class productInfoExtract:
     # 상품 url을 받아서 상품의 타이틀과 상태를 리턴한다.
     def extract_Status(self, url, idx):
         print("- extract_Status START")
-        # ua = UserAgent()
-        headers = {"User-agent": random.choice(self.UA_DESKTOP)}
-        req = requests.get(url, headers=headers, verify=False)
-        soup = BeautifulSoup(req.text, "lxml")  # html에 대하여 접근할 수 있도록
 
-        # req = requests.get(url, verify=False)
-        # soup = BeautifulSoup(req.text, "html.parser")
+        req = requests.get(url, verify=False)
+        soup = BeautifulSoup(req.text, "lxml")  # html에 대하여 접근할 수 있도록
 
         # a = urlopen(url)
         # soup = BeautifulSoup(a.read(), 'html.parser')
