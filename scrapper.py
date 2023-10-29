@@ -3,8 +3,8 @@ import requests
 import time
 import urllib3
 import random
-from fake_useragent import UserAgent
-from random_user_agent.user_agent import UserAgent as random_userAgent
+# from fake_useragent import UserAgent
+# from random_user_agent.user_agent import UserAgent as random_userAgent
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 
@@ -32,6 +32,7 @@ class productInfoExtract:
         mainUrl = f"http://www.gsshop.com/shop/sect/sectM.gs?sectid={sectid}&eh=eyJwYWdlTnVtYmVyIjoxLCJzZWxlY3RlZCI6Im9wdC1wYWdlIn0="
         print("  .mainUrl : " + mainUrl)
         # headers = {"User-agent": random.choice(self.UA_DESKTOP)}
+        time.sleep(random.uniform(1, 5))
         req = requests.get(mainUrl, verify=False)
         soup = BeautifulSoup(req.text, "lxml")  # html에 대하여 접근할 수 있도록
 
@@ -77,6 +78,8 @@ class productInfoExtract:
     def get_detail_product(self, url):
         print("- get_detail_status STRAT")
         rsltList = []
+
+        time.sleep(random.uniform(1, 5))
         req = requests.get(url, verify=False)
         soup = BeautifulSoup(req.text, "lxml")  # html에 대하여 접근할 수 있도록
 
@@ -95,7 +98,6 @@ class productInfoExtract:
             detailUrl = orginStr[index1:index2]
             detailUrl = detailUrl.replace('https', 'http')
 
-            time.sleep(1.5)
             # 상품 상태 추출
             rsltStatus = self.extract_Status(detailUrl, self.idx)
             print("product_detail : " + str(rsltStatus))
@@ -106,6 +108,7 @@ class productInfoExtract:
     def extract_Status(self, url, idx):
         print("- extract_Status START")
 
+        time.sleep(random.uniform(1, 5))
         req = requests.get(url, verify=False)
         soup = BeautifulSoup(req.text, "lxml")  # html에 대하여 접근할 수 있도록
 
