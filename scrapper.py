@@ -14,7 +14,8 @@ class productInfoExtract:
 
     # 상품 개별 index(get_detail_product에서 증가)
     idx = 0
-    headers = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36'
+    headers = {"User-agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36',
+               "Accept-Language": 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7'}
 
     def __init__(self):
         self.str = ""
@@ -33,10 +34,10 @@ class productInfoExtract:
         mainUrl = f"https://www.gsshop.com/shop/sect/sectM.gs?sectid={sectid}&eh=eyJwYWdlTnVtYmVyIjoxLCJzZWxlY3RlZCI6Im9wdC1wYWdlIn0="
         print("  .mainUrl : " + mainUrl)
         # headers = {"User-agent": random.choice(self.UA_DESKTOP)}
-        headers = {"User-agent": self.headers}
+        # headers = {"User-agent": self.headers}
         time.sleep(random.uniform(1, 3))
-        req = requests.get(mainUrl, headers=headers)
-        soup = BeautifulSoup(req.text, 'html.parser')  # html에 대하여 접근할 수 있도록
+        req = requests.get(mainUrl, headers=self.headers)
+        soup = BeautifulSoup(req.text, 'html.parser')
 
         # a = urlopen(mainUrl)
         # soup = BeautifulSoup(a.read(), 'html.parser')
@@ -83,9 +84,9 @@ class productInfoExtract:
         rsltList = []
 
         time.sleep(random.uniform(1, 5))
-        headers = {"User-agent": self.headers}
-        req = requests.get(url, headers=headers, verify=False)
-        soup = BeautifulSoup(req.text, "lxml")  # html에 대하여 접근할 수 있도록
+        # headers = {"User-agent": self.headers}
+        req = requests.get(url, headers=self.headers, verify=False)
+        soup = BeautifulSoup(req.text, "lxml")
 
         # a = urlopen(url)
         # soup = BeautifulSoup(a.read(), 'html.parser')
@@ -103,9 +104,15 @@ class productInfoExtract:
             detailUrl = detailUrl.replace('https', 'http')
 
             # 상품 상태 추출
-            rsltStatus = self.extract_Status(detailUrl, self.idx)
-            print("product_detail : " + str(rsltStatus))
-            rsltList.append(rsltStatus)
+            try:
+                rsltStatus = self.extract_Status(detailUrl, self.idx)
+                print("product_detail : " + str(rsltStatus))
+                rsltList.append(rsltStatus)
+            except:
+                rsltStatus = self.extract_Status(detailUrl, self.idx)
+                print("product_detail : " + str(rsltStatus))
+                rsltList.append(rsltStatus)
+
         return rsltList
 
     # 상품 url을 받아서 상품의 타이틀과 상태를 리턴한다.
@@ -113,9 +120,9 @@ class productInfoExtract:
         print("- extract_Status START")
 
         time.sleep(random.uniform(1, 5))
-        headers = {"User-agent": self.headers}
-        req = requests.get(url, headers=headers, verify=False)
-        soup = BeautifulSoup(req.text, "lxml")  # html에 대하여 접근할 수 있도록
+        # headers = {"User-agent": self.headers}
+        req = requests.get(url, headers=self.headers, verify=False)
+        soup = BeautifulSoup(req.text, "lxml")
 
         # a = urlopen(url)
         # soup = BeautifulSoup(a.read(), 'html.parser')
