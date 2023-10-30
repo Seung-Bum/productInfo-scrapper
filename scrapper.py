@@ -39,14 +39,14 @@ class productInfoExtract:
     def get_title(self, sectid):
         mainUrl = f"https://www.gsshop.com/shop/sect/sectM.gs?sectid={sectid}&eh=eyJwYWdlTnVtYmVyIjoxLCJzZWxlY3RlZCI6Im9wdC1wYWdlIn0="
         print("  .mainUrl : " + mainUrl)
-        # headers = {"User-agent": random.choice(self.UA_DESKTOP)}
-        # headers = {"User-agent": self.headers}
-        time.sleep(random.uniform(1, 3))
+
+        # time.sleep(random.uniform(1, 1))
         req = requests.get(mainUrl, headers=self.headers)
         soup = BeautifulSoup(req.text, 'html.parser')
 
         # a = urlopen(mainUrl)
         # soup = BeautifulSoup(a.read(), 'html.parser')
+
         title = soup.find('h2', 'shop-title')
         title = title.text.replace("\n", "")
         title = str(title)
@@ -89,8 +89,7 @@ class productInfoExtract:
         print("- get_detail_status STRAT")
         rsltList = []
 
-        time.sleep(random.uniform(1, 5))
-        # headers = {"User-agent": self.headers}
+        # time.sleep(random.uniform(1, 1))
         req = requests.get(url, headers=self.headers, verify=False)
         soup = BeautifulSoup(req.text, "lxml")
 
@@ -110,14 +109,9 @@ class productInfoExtract:
             detailUrl = detailUrl.replace('https', 'http')
 
             # 상품 상태 추출
-            try:
-                rsltStatus = self.extract_Status(detailUrl, self.idx)
-                print("product_detail : " + str(rsltStatus))
-                rsltList.append(rsltStatus)
-            except:
-                rsltStatus = self.extract_Status(detailUrl, self.idx)
-                print("product_detail : " + str(rsltStatus))
-                rsltList.append(rsltStatus)
+            rsltStatus = self.extract_Status(detailUrl, self.idx)
+            print("product_detail : " + str(rsltStatus))
+            rsltList.append(rsltStatus)
 
         return rsltList
 
@@ -125,10 +119,14 @@ class productInfoExtract:
     def extract_Status(self, url, idx):
         print("- extract_Status START")
 
-        time.sleep(random.uniform(1, 5))
-        # headers = {"User-agent": self.headers}
-        req = requests.get(url, headers=self.headers, verify=False)
-        soup = BeautifulSoup(req.text, "lxml")
+        # time.sleep(random.uniform(1, 1))
+
+        try:
+            req = requests.get(url, headers=self.headers, verify=False)
+            soup = BeautifulSoup(req.text, "lxml")
+        except:
+            print("requeste except!!")
+            # time.sleep(8)
 
         # a = urlopen(url)
         # soup = BeautifulSoup(a.read(), 'html.parser')
