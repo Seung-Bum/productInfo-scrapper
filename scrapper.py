@@ -1,15 +1,16 @@
 import base64
 import requests
-import time
 import urllib3
-import random
-# from fake_useragent import UserAgent
-# from random_user_agent.user_agent import UserAgent as random_userAgent
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
+# import time
+# import random
+# from fake_useragent import UserAgent
+# from random_user_agent.user_agent import UserAgent as random_userAgent
 
 
 class productInfoExtract:
+    # warning 표시 안함
     urllib3.disable_warnings()
 
     # 상품 개별 index(get_detail_product에서 증가)
@@ -78,6 +79,8 @@ class productInfoExtract:
                 return detailList_result
 
             # 상품 진열 페이지
+            # 상세 페이지의 데이터를 모두 담는다
+            # [a, b] + [c, d] = [a, b, c, d]
             detailList_result += self.get_detail_product(subUrl)
 
             # for문이 끝날때 다시 숫자를 var로 변경함
@@ -126,7 +129,6 @@ class productInfoExtract:
             soup = BeautifulSoup(req.text, "lxml")
         except:
             print("requeste except!!")
-            # time.sleep(8)
 
         # a = urlopen(url)
         # soup = BeautifulSoup(a.read(), 'html.parser')
