@@ -1,29 +1,5 @@
-import time
 import tkinter
-from flask import redirect, render_template, request
 from scrapper import productInfoExtract
-
-
-def productAllExtract(param):
-    print("- productAllExtract START ---------------------------------")
-    start = time.time()
-    sectid = param
-    # sectid = request.args.get('sectid')
-    product_info_extract = productInfoExtract()
-    if sectid:
-        print("  .sectid : " + str(sectid))
-        title = product_info_extract.get_title(sectid)
-        detailList = product_info_extract.get_product_status(sectid)
-    else:
-        print("  .sectid : NONE")
-        return redirect("/")
-    end = time.time()
-    print("- productAllExtract end ---------------------------------")
-    print(f"{end - start:.2f} sec")
-
-    # 엑셀로 데이터를 저장하는 메서드 필요
-    return  # render_template("report.html", title=title, rslt_list=detailList)
-
 
 window = tkinter.Tk()
 
@@ -39,7 +15,7 @@ def run(event):
     label1.config(text="실행중...")
     sectid = entry.get()
     print("setid : " + str(sectid))
-    productAllExtract(sectid)
+    productInfoExtract().productAllExtract(sectid)
     label1.config(text="완료")
 
 

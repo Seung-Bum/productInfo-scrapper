@@ -1,7 +1,8 @@
 import time
-from flask import Flask, render_template, request, request, redirect
+from flask import Flask, render_template, request, redirect
 from scrapper import productInfoExtract
 
+# * 웹서버로 실행시 main.py를 통해 실행
 # * 403 ERROR -The request could not be satisfied.
 #   위의 애러가 발생한 경우 GS홈쇼핑 페이지 크롤링 하다가 차단된 것임
 #   시간이 지나면 차단된 것이 풀린다.
