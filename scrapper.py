@@ -100,9 +100,6 @@ class productInfoExtract:
         req = requests.get(url, headers=self.headers, verify=False)
         soup = BeautifulSoup(req.text, "lxml")
 
-        # a = urlopen(url)
-        # soup = BeautifulSoup(a.read(), 'html.parser')
-
         buttonTags = soup.find_all('button', 'link-new-tab')
         buttonTags_len = len(buttonTags)
         print('  .buttonTags len : ' + str(buttonTags_len))
@@ -132,22 +129,19 @@ class productInfoExtract:
     # 상품 url을 받아서 상품의 타이틀과 상태를 리턴한다.
     def extract_Status(self, url, idx):
         print("- extract_Status START")
-
         # time.sleep(random.uniform(1, 1))
-
         try:
             req = requests.get(url, headers=self.headers, verify=False)
             soup = BeautifulSoup(req.text, "lxml")
         except:
             print("requeste except!!")
 
-        # a = urlopen(url)
-        # soup = BeautifulSoup(a.read(), 'html.parser')
-
+        url = url[0:int(url.find('\''))]
         title = soup.find("p", "product-title").text
-        print("  .title : " + title)
         status = soup.find("span", "gs-btn red color-only gient").text
+        print("  .title : " + title)
         print("  .status : " + status)
+
         return {'idx': idx, 'title': title, 'status': status, 'link': url}
 
     # main method
@@ -160,8 +154,8 @@ class productInfoExtract:
             print("  .sectid : " + str(sectid))
             title = self.get_title(sectid)
             detailList = self.get_product_status(sectid)
-            # print(str(title))
-            # print(str(detailList))
+            print(str(title))
+            print(str(detailList))
         else:
             print("  .sectid : NONE")
             return redirect("/")
