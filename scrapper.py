@@ -6,10 +6,6 @@ from utilExcel import makeExcel
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from flask import redirect
-# import random
-# from fake_useragent import UserAgent
-# from flask import redirect, render_template, request
-# from random_user_agent.user_agent import UserAgent as random_userAgent
 
 
 class productInfoExtract:
