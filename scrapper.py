@@ -41,12 +41,8 @@ class productInfoExtract:
         mainUrl = f"https://www.gsshop.com/shop/sect/sectM.gs?sectid={sectid}&eh=eyJwYWdlTnVtYmVyIjoxLCJzZWxlY3RlZCI6Im9wdC1wYWdlIn0="
         print("  .mainUrl : " + mainUrl)
 
-        # time.sleep(random.uniform(1, 1))
         req = requests.get(mainUrl, headers=self.headers)
         soup = BeautifulSoup(req.text, 'html.parser')
-
-        # a = urlopen(mainUrl)
-        # soup = BeautifulSoup(a.read(), 'html.parser')
 
         title = soup.find('h2', 'shop-title')
         title = title.text.replace("\n", "")
@@ -118,6 +114,7 @@ class productInfoExtract:
             # 상품 상태 추출
             rsltStatus = self.extract_Status(detailUrl, self.idx)
             print("product_detail : " + str(rsltStatus))
+            # LogPrinter().append_log("product_detail : " + str(rsltStatus))
             rsltList.append(rsltStatus)
 
         return rsltList
