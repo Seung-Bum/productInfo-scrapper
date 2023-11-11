@@ -2,6 +2,7 @@ import base64
 import requests
 import time
 import urllib3
+import tkinter as tk
 from utilExcel import makeExcel
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
@@ -114,7 +115,7 @@ class productInfoExtract:
             # 상품 상태 추출
             rsltStatus = self.extract_Status(detailUrl, self.idx)
             print("product_detail : " + str(rsltStatus))
-            # LogPrinter().append_log("product_detail : " + str(rsltStatus))
+            append_log(rsltStatus)
             rsltList.append(rsltStatus)
 
         return rsltList
@@ -147,8 +148,8 @@ class productInfoExtract:
             print("  .sectid : " + str(sectid))
             title = self.get_title(sectid)
             detailList = self.get_product_status(sectid)
-            print(str(title))
-            print(str(detailList))
+            # print(str(title))
+            # print(str(detailList))
         else:
             print("  .sectid : NONE")
             return redirect("/")
@@ -157,3 +158,48 @@ class productInfoExtract:
         print(f"{end - start:.2f} sec")
 
         makeExcel(title, detailList)
+
+
+def run(event):
+    sectid = entry.get()
+    print("setid : " + str(sectid))
+    productInfoExtract().productAllExtract(sectid)
+    label1.config(text="완료")
+
+
+# Function to append a log message to the Text widget
+def append_log(message):
+    # log_text.insert(tk.END, message + "\n")
+    log_text.insert(tk.END, message)
+    log_text.insert(tk.END, "\n")
+    log_text.update()
+    log_text.see(tk.END)  # Scroll to the end
+
+
+# Create the main tkinter window
+window = tk.Tk()
+window.title("ProductInfo-Scrapper")
+window.geometry('800x760')
+window.resizable(True, True)
+
+# Create a Text widget for log display
+log_text = tk.Text(window, wrap=tk.NONE)
+log_text.pack(fill=tk.BOTH, expand=True)
+
+# Create a scrollbar for the Text widget
+scrollbar = tk.Scrollbar(log_text)
+scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+log_text.config(yscrollcommand=scrollbar.set)
+scrollbar.config(command=log_text.yview)
+
+label = tk.Label(window, text="sectid를 입력해주세요.")
+label.pack()
+
+entry = tk.Entry(window)
+entry.bind("<Return>", run)
+entry.pack()
+
+label1 = tk.Label(window)
+label1.pack()
+
+window.mainloop()
