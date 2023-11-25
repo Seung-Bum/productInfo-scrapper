@@ -66,12 +66,11 @@ class productInfoExtract:
             pageEncoding = str(pageEncoding)
             print("  .page : " + page)
             print("  .encoding : " + pageEncoding)
-            subUrl = subUrl + pageEncoding[2:-2]
-            print("  .subUrl : " + subUrl)
+            requetUrl = subUrl + pageEncoding[2:-2]
+            print("  .subUrl : " + requetUrl)
 
             # url이 700자가 넘어갈 경우 없는 페이지로 판단
-            subUrl_len = len(subUrl)
-            if (subUrl_len > 700):
+            if (len(requetUrl) > 700):
                 print("  .END PAGE")
                 return detailList_result
 

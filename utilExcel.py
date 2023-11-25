@@ -15,6 +15,7 @@ def makeExcel(category, dataList):
     for dict in dataList:
         ws.append([dict['idx'], dict['title'], dict['status'], dict['link']])
 
-    filename = f'C:\\Users\\{user}\\Desktop\\productScrap.xlsx'
+    # filename = f'C:\\Users\\{user}\\Desktop\\productScrap.xlsx'
+    filename = '.\\productScrap.xlsx'
     wb.save(filename)
     print("MakeExcel End")

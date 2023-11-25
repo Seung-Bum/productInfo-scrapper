@@ -46,5 +46,10 @@
 - lxml install 후 프로그램 예외발생 시 확인  
   https://intostock.tistory.com/50
 
-- .exe 실행파일 생성하기
+- .exe 실행파일 생성하기  
   https://www.youtube.com/watch?app=desktop&v=Es1fQqqxIFQ
+
+- gsmtp 인증 에러 발생시 참고  
+  (smtplib.SMTPAuthenticationError: (534, b'5.7.9 Application-specific password required. Learn more)  
+  https://greensul.tistory.com/31  
+  https://myaccount.google.com/
