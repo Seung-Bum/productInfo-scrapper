@@ -4,7 +4,7 @@ from openpyxl import Workbook
 
 
 def makeExcel(category, dataList):
-    print("MakeExcel Start")
+    print("  .MakeExcel Start")
     wb = Workbook()
     ws = wb.active
     ws.title = "dataList"  # 엑셀 시트명 변경
@@ -18,4 +18,4 @@ def makeExcel(category, dataList):
     # filename = f'C:\\Users\\{user}\\Desktop\\productScrap.xlsx'
     filename = '.\\productScrap.xlsx'
     wb.save(filename)
-    print("MakeExcel End")
+    print("  .MakeExcel End")

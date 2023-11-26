@@ -1,4 +1,4 @@
-import base64
+import utilBase64
 import requests
 import time
 import urllib3
@@ -7,6 +7,8 @@ from utilExcel import makeExcel
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from flask import redirect
+from utilMail import sendEmail
+from flask import Flask, render_template, request, redirect
 
 
 class productInfoExtract:
@@ -31,13 +33,6 @@ class productInfoExtract:
         self.url = ""
         self.index = ""
 
-    def encodingBase64(self, str):
-        bytes = str.encode('UTF-8')
-        result = base64.b64encode(bytes)
-        # result_str = result.decode('ascii')
-        print("  .base64 encoding success")
-        return result
-
     def get_title(self, sectid):
         mainUrl = f"https://www.gsshop.com/shop/sect/sectM.gs?sectid={sectid}&eh=eyJwYWdlTnVtYmVyIjoxLCJzZWxlY3RlZCI6Im9wdC1wYWdlIn0="
         print("  .mainUrl : " + mainUrl)
@@ -60,9 +55,10 @@ class productInfoExtract:
         subUrl = f"https://www.gsshop.com/shop/sect/sectM.gs?sectid={sectid}&eh="
 
         # 전체 페이지 loop(최대 100페이지 까지만 parsing)
+        # 전체 페이지 하려면 while true로 바꿔서 진행해야 할듯함
         for i in range(1, 101):
             page = page.replace('var', str(i))
-            pageEncoding = self.encodingBase64(page)
+            pageEncoding = utilBase64.encodingBase64(page)
             pageEncoding = str(pageEncoding)
             print("  .page : " + page)
             print("  .encoding : " + pageEncoding)
@@ -105,6 +101,7 @@ class productInfoExtract:
             detailUrl = detailUrl.replace('https', 'http')
 
             # 로봇 배제 표준 사항 적용
+            # 해당 상품id면 -1이 아닌 수가 나오게 된다.
             if (-1 != detailUrl.find('prdid=18549103') or
                 -1 != detailUrl.find('prdid=19113221') or
                     -1 != detailUrl.find('prdid=19856141')):
@@ -112,11 +109,13 @@ class productInfoExtract:
                 continue
 
             # 상품 상태 추출
-            rsltStatus = self.extract_Status(detailUrl, self.idx)
-            print("product_detail : " + str(rsltStatus))
-            append_log(rsltStatus)
-            rsltList.append(rsltStatus)
-
+            try:
+                rsltStatus = self.extract_Status(detailUrl, self.idx)
+                print("product_detail : " + str(rsltStatus))
+                append_log(rsltStatus)
+                rsltList.append(rsltStatus)
+            except:
+                print("product_detail except url : " + detailUrl)
         return rsltList
 
     # 상품 url을 받아서 상품의 타이틀과 상태를 리턴한다.
@@ -138,13 +137,18 @@ class productInfoExtract:
         return {'idx': idx, 'title': title, 'status': status, 'link': url}
 
     # main method
-    def productAllExtract(self, param):
+    # Controller 역할을 하는 메서드
+    def productAllExtract(self, param, direction):
         print("- productAllExtract START ---------------------------------")
         start = time.time()
-        sectid = param
+        sectid = param['sectid']
+        to_mail = param['to_mail']
+        title = ""
+        detailList = []
 
         if sectid:
             print("  .sectid : " + str(sectid))
+            print("  .to_mail : " + to_mail)
             title = self.get_title(sectid)
             detailList = self.get_product_status(sectid)
             # print(str(title))
@@ -157,12 +161,28 @@ class productInfoExtract:
         print(f"{end - start:.2f} sec")
 
         makeExcel(title, detailList)
+        time.sleep(10)
+        print("- productAllExtract makeExcel end -----------------------")
+        sendEmail(to_mail)
+        print("- productAllExtract sendEmail end -----------------------")
+
+        if direction == 'web':
+            return render_template("report.html", title=title, rslt_list=detailList)
+
+# ==============================================================================
+# ==============================================================================
 
 
 def run(event):
+    param = {}
     sectid = entry.get()
+    to_mail = entry1.get()
+    param['sectid'] = sectid
+    param['to_mail'] = to_mail
+
     print("setid : " + str(sectid))
-    productInfoExtract().productAllExtract(sectid)
+    print("to_mail : " + str(to_mail))
+    productInfoExtract().productAllExtract(param, 'null')
     label1.config(text="완료")
 
 
@@ -191,6 +211,10 @@ scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 log_text.config(yscrollcommand=scrollbar.set)
 scrollbar.config(command=log_text.yview)
 
+label0 = tk.Label(window)  # 공백
+label0.pack()
+
+# sectid
 label = tk.Label(window, text="sectid를 입력해주세요.")
 label.pack()
 
@@ -200,5 +224,16 @@ entry.pack()
 
 label1 = tk.Label(window)
 label1.pack()
+
+# Email
+labe2 = tk.Label(window, text="데이터 받을 메일을 입력해주세요. ( ex) test@mail.com )")
+labe2.pack()
+
+entry1 = tk.Entry(window)
+entry1.bind("<Return>", run)
+entry1.pack()
+
+label3 = tk.Label(window)
+label3.pack()
 
 window.mainloop()
