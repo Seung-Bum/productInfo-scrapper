@@ -56,7 +56,10 @@ class productInfoExtract:
 
         # 전체 페이지 loop(최대 100페이지 까지만 parsing)
         # 전체 페이지 하려면 while true로 바꿔서 진행해야 할듯함
-        for i in range(1, 101):
+        # for i in range(1, 101):
+        i = 0
+        while True:
+            ++i
             page = page.replace('var', str(i))
             pageEncoding = utilBase64.encodingBase64(page)
             pageEncoding = str(pageEncoding)
@@ -73,10 +76,11 @@ class productInfoExtract:
             # 상품 진열 페이지
             # 상세 페이지의 데이터를 모두 담는다
             # [a, b] + [c, d] = [a, b, c, d]
-            detailList_result += self.get_detail_product(subUrl)
+            detailList_result += self.get_detail_product(requetUrl)
 
             # for문이 끝날때 다시 숫자를 var로 변경함
             page = page.replace(str(i), 'var')
+
         return detailList_result
 
     # 상품 진열 페이지

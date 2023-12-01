@@ -13,9 +13,9 @@ from email.utils import formatdate
 
 # 로그인 정보
 my_account = utilBase64.decodingBase64('c2I5MTAxMjZAZ21haWwuY29t')
-my_password = ""
+my_password = "vomv tvkk lxue yvlk"
 
-# 메일을 받을 계정
+# 메일을 받을 계정(입력받음)
 to_mail = ""
 
 # 메일 본문 내용

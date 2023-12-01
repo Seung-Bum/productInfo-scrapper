@@ -9,9 +9,8 @@ def encodingBase64(str):
     return result
 
 
-def decodingBase64(str):
-    # bytes = str.encode('UTF-8')
-    # result = base64.b64encode(bytes)
-    result_str = str.decode('ascii')
-    print("  .base64 decoding success")
-    return result_str
+def decodingBase64(code):
+    code_bytes = code.encode('ascii')
+    decoded = base64.b64decode(code_bytes)
+    str = decoded.decode('UTF-8')
+    return str
