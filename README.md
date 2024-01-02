@@ -4,6 +4,18 @@
 
 - 품절은 [바로 구매] 버튼 문구 대신 [품절]이라고 나옴
 
+* Test
+
+  - web test 링크예시
+    . 린스컨디셔너
+    http://localhost:5000/extract?sectid=1661646
+
+    . 포인트메이크업
+    http://localhost:5000/extract?sectid=1660623
+
+  - gui test
+    . sectid와 email을 입력창에 입력
+
 * 상품링크
 
   - sectid에 의해서 카테고리가 나뉜다  
@@ -53,3 +65,8 @@
   (smtplib.SMTPAuthenticationError: (534, b'5.7.9 Application-specific password required. Learn more)  
   https://greensul.tistory.com/31  
   https://myaccount.google.com/
+
+* tkinter
+
+- gui 환경 만들기
+  https://toypapa.tistory.com/33

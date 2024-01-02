@@ -10,6 +10,17 @@ from flask import redirect
 from utilMail import sendEmail
 from flask import Flask, render_template, request, redirect
 
+# 데이터 추출이 완료되고, 엑셀이 만들어진 뒤에 이메일이 발송된다.
+# 0. run
+# 1. productAllExtract
+#   - makeExcel
+#   - sendmail
+# 2-1. get_title(sectid)
+# 2-2. get_product_status(sectid)
+# 3. get_detail_product(requetUrl)
+# 4. extract_Status(detailUrl, self.idx)
+# 5. append_log(rsltStatus)
+
 
 class productInfoExtract:
     # warning 표시 안함
@@ -54,9 +65,8 @@ class productInfoExtract:
         # sectid를 param로 받음, 상품 카테고리마다 다르다
         subUrl = f"https://www.gsshop.com/shop/sect/sectM.gs?sectid={sectid}&eh="
 
-        # 전체 페이지 loop(최대 100페이지 까지만 parsing)
-        # 전체 페이지 하려면 while true로 바꿔서 진행해야 할듯함
-        # for i in range(1, 101):
+        # 전체 페이지 하려면 while true로 진행
+        # for i in range(1, 101): 기존에는 1에서 100까지만 추출
         i = 0
         while True:
             ++i
@@ -80,7 +90,6 @@ class productInfoExtract:
 
             # for문이 끝날때 다시 숫자를 var로 변경함
             page = page.replace(str(i), 'var')
-
         return detailList_result
 
     # 상품 진열 페이지
@@ -173,8 +182,8 @@ class productInfoExtract:
         if direction == 'web':
             return render_template("report.html", title=title, rslt_list=detailList)
 
-# ==============================================================================
-# ==============================================================================
+# ==================================================================================
+# ==================================================================================
 
 
 def run(event):
@@ -190,8 +199,8 @@ def run(event):
     label1.config(text="완료")
 
 
-# Function to append a log message to the Text widget
 def append_log(message):
+    # Function to append a log message to the Text widget
     # log_text.insert(tk.END, message + "\n")
     log_text.insert(tk.END, message)
     log_text.insert(tk.END, "\n")
