@@ -10,16 +10,17 @@ from flask import redirect
 from utilMail import sendEmail
 from flask import Flask, render_template, request, redirect
 
+
 # 데이터 추출이 완료되고, 엑셀이 만들어진 뒤에 이메일이 발송된다.
-# 0. run
+# 0. run (rungui tkinter에서 실행)
 # 1. productAllExtract
 #   - makeExcel
 #   - sendmail
 # 2-1. get_title(sectid)
 # 2-2. get_product_status(sectid)
-# 3. get_detail_product(requetUrl)
-# 4. extract_Status(detailUrl, self.idx)
-# 5. append_log(rsltStatus)
+#       - get_detail_product(requetUrl)
+#           - extract_Status(detailUrl, self.idx)
+#           - append_log(rsltStatus)
 
 
 class productInfoExtract:
@@ -43,6 +44,39 @@ class productInfoExtract:
         self.param_list = ""
         self.url = ""
         self.index = ""
+
+    # main method
+    # Controller 역할을 하는 메서드
+    def productAllExtract(self, param, direction):
+        print("- productAllExtract START ---------------------------------")
+        start = time.time()
+        sectid = param['sectid']
+        to_mail = param['to_mail']
+        title = ""
+        detailList = []
+
+        if sectid:
+            print("  .sectid : " + str(sectid))
+            print("  .to_mail : " + to_mail)
+            title = self.get_title(sectid)  # 전체 상품 카테고리 이름
+            detailList = self.get_product_status(sectid)
+            # print(str(title))
+            # print(str(detailList))
+        else:
+            print("  .sectid : NONE")
+            return redirect("/")
+        end = time.time()
+        print("- productAllExtract end ---------------------------------")
+        print(f"{end - start:.2f} sec")
+
+        makeExcel(title, detailList)
+        time.sleep(10)
+        print("- productAllExtract makeExcel end -----------------------")
+        sendEmail(to_mail)
+        print("- productAllExtract sendEmail end -----------------------")
+
+        if direction == 'web':
+            return render_template("report.html", title=title, rslt_list=detailList)
 
     def get_title(self, sectid):
         mainUrl = f"https://www.gsshop.com/shop/sect/sectM.gs?sectid={sectid}&eh=eyJwYWdlTnVtYmVyIjoxLCJzZWxlY3RlZCI6Im9wdC1wYWdlIn0="
@@ -149,40 +183,9 @@ class productInfoExtract:
 
         return {'idx': idx, 'title': title, 'status': status, 'link': url}
 
-    # main method
-    # Controller 역할을 하는 메서드
-    def productAllExtract(self, param, direction):
-        print("- productAllExtract START ---------------------------------")
-        start = time.time()
-        sectid = param['sectid']
-        to_mail = param['to_mail']
-        title = ""
-        detailList = []
-
-        if sectid:
-            print("  .sectid : " + str(sectid))
-            print("  .to_mail : " + to_mail)
-            title = self.get_title(sectid)
-            detailList = self.get_product_status(sectid)
-            # print(str(title))
-            # print(str(detailList))
-        else:
-            print("  .sectid : NONE")
-            return redirect("/")
-        end = time.time()
-        print("- productAllExtract end ---------------------------------")
-        print(f"{end - start:.2f} sec")
-
-        makeExcel(title, detailList)
-        time.sleep(10)
-        print("- productAllExtract makeExcel end -----------------------")
-        sendEmail(to_mail)
-        print("- productAllExtract sendEmail end -----------------------")
-
-        if direction == 'web':
-            return render_template("report.html", title=title, rslt_list=detailList)
 
 # ==================================================================================
+# tkinter gui
 # ==================================================================================
 
 

@@ -20,7 +20,7 @@ def home():
 def productAllExtract():
     param = {}
     sectid = request.args.get('sectid')
-    to_mail = request.args.get('toMail')
+    to_mail = request.args.get('email')
 
     param['sectid'] = sectid
     param['to_mail'] = to_mail
