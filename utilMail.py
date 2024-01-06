@@ -65,6 +65,7 @@ def sendEmail(to_mail):
         print("  .받으실 메일 주소를 정확히 입력하십시오.")
         smtp.quit()
 
+
 # 받는 메일 유효성 검사 거친 후 메일 전송
 # sendEmail(to_mail)
 

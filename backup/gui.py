@@ -1,5 +1,5 @@
 import tkinter as tk
-from scrapper import productInfoExtract
+from scrapper_gui import productInfoExtract
 
 
 def run(event):

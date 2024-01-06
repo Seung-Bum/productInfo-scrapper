@@ -9,7 +9,7 @@ from urllib.request import urlopen
 from flask import redirect
 from utilMail import sendEmail
 from flask import Flask, render_template, request, redirect
-
+from scrapper_web import get_product_info_class
 
 # 데이터 추출이 완료되고, 엑셀이 만들어진 뒤에 이메일이 발송된다.
 # 0. run (rungui tkinter에서 실행)
@@ -22,7 +22,7 @@ from flask import Flask, render_template, request, redirect
 #           - extract_Status(detailUrl, self.idx)
 #           - append_log(rsltStatus)
 
-
+'''
 class productInfoExtract:
     # warning 표시 안함
     urllib3.disable_warnings()
@@ -79,6 +79,7 @@ class productInfoExtract:
             return render_template("report.html", title=title, rslt_list=detailList)
 
     def get_title(self, sectid):
+        # 1페이지 ( {"pageNumber":1,"selected":"opt-page"} )
         mainUrl = f"https://www.gsshop.com/shop/sect/sectM.gs?sectid={sectid}&eh=eyJwYWdlTnVtYmVyIjoxLCJzZWxlY3RlZCI6Im9wdC1wYWdlIn0="
         print("  .mainUrl : " + mainUrl)
 
@@ -99,7 +100,7 @@ class productInfoExtract:
         # sectid를 param로 받음, 상품 카테고리마다 다르다
         subUrl = f"https://www.gsshop.com/shop/sect/sectM.gs?sectid={sectid}&eh="
 
-        # 전체 페이지 하려면 while true로 진행
+        # 전체 페이지 하려면 while true로 진행, 1페이지 부터 시작
         # for i in range(1, 101): 기존에는 1에서 100까지만 추출
         i = 0
         while True:
@@ -112,11 +113,6 @@ class productInfoExtract:
             requetUrl = subUrl + pageEncoding[2:-2]
             print("  .subUrl : " + requetUrl)
 
-            # url이 700자가 넘어갈 경우 없는 페이지로 판단
-            if (len(requetUrl) > 700):
-                print("  .END PAGE")
-                return detailList_result
-
             # 상품 진열 페이지
             # 상세 페이지의 데이터를 모두 담는다
             # [a, b] + [c, d] = [a, b, c, d]
@@ -124,6 +120,7 @@ class productInfoExtract:
 
             # for문이 끝날때 다시 숫자를 var로 변경함
             page = page.replace(str(i), 'var')
+
         return detailList_result
 
     # 상품 진열 페이지
@@ -139,6 +136,7 @@ class productInfoExtract:
         buttonTags_len = len(buttonTags)
         print('  .buttonTags len : ' + str(buttonTags_len))
 
+        # 상품진열 페이지의 버튼들에서 각각의 상품 링크를 가져옴
         for i in buttonTags:
             self.idx += 1
             orginStr = str(i)
@@ -155,11 +153,11 @@ class productInfoExtract:
                 print("로봇 배제 표준 사항 적용")
                 continue
 
-            # 상품 상태 추출
+            # 각각의 상품 상태 추출
             try:
                 rsltStatus = self.extract_Status(detailUrl, self.idx)
                 print("product_detail : " + str(rsltStatus))
-                append_log(rsltStatus)
+                # append_log(rsltStatus)
                 rsltList.append(rsltStatus)
             except:
                 print("product_detail except url : " + detailUrl)
@@ -182,7 +180,7 @@ class productInfoExtract:
         print("  .status : " + status)
 
         return {'idx': idx, 'title': title, 'status': status, 'link': url}
-
+'''
 
 # ==================================================================================
 # tkinter gui
@@ -198,7 +196,8 @@ def run(event):
 
     print("setid : " + str(sectid))
     print("to_mail : " + str(to_mail))
-    productInfoExtract().productAllExtract(param, 'null')
+    # productInfoExtract().productAllExtract(param, 'null')
+    get_product_info_class().get_product_page(param)
     label1.config(text="완료")
 
 
