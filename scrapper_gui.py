@@ -117,13 +117,15 @@ def run(event):
     param = {}
     sectid = entry.get()
     to_mail = entry1.get()
+    token = entry2.get()
     param['sectid'] = sectid
     param['to_mail'] = to_mail
+    param['token'] = token
     print("setid : " + str(sectid))
     print("to_mail : " + str(to_mail))
     product_info_list, category_title = get_product_info_class_gui().get_product_page(param)
     makeExcel(category_title, product_info_list)
-    sendEmail(to_mail)
+    sendEmail(to_mail, token)
     label1.config(text="완료")
 
 
@@ -163,6 +165,7 @@ entry = tk.Entry(window)
 entry.bind("<Return>", run)
 entry.pack()
 
+# 빈공간
 label1 = tk.Label(window)
 label1.pack()
 
@@ -174,7 +177,20 @@ entry1 = tk.Entry(window)
 entry1.bind("<Return>", run)
 entry1.pack()
 
+# 빈공간
 label3 = tk.Label(window)
 label3.pack()
+
+# send_token
+labe4 = tk.Label(window, text="mail 인증 Token을 입력해주세요.")
+labe4.pack()
+
+entry2 = tk.Entry(window)
+entry2.bind("<Return>", run)
+entry2.pack()
+
+# 빈공간
+label5 = tk.Label(window)
+label5.pack()
 
 window.mainloop()

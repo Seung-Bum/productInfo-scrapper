@@ -26,7 +26,9 @@ content = "안녕하세요. \n\n\
 "
 
 
-def sendEmail(to_mail):
+def sendEmail(to_mail, token):
+    my_password = token
+
     # smpt 서버와 연결
     gmail_smtp = "smtp.gmail.com"  # gmail smtp 주소
     gmail_port = 465  # gmail smtp 포트번호. 고정(변경 불가)

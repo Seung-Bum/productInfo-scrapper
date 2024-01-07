@@ -70,3 +70,6 @@
 
 - gui 환경 만들기
   https://toypapa.tistory.com/33
+
+- exe 실행파일 만들기
+  https://doomed-lab.tistory.com/46
