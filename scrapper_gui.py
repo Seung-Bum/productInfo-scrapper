@@ -38,10 +38,16 @@ class get_product_info_class_gui:
         mainUrl = f'https://www.gsshop.com/shop/sect/sectM.gs?sectid={sectid}'
         mainReq = requests.get(mainUrl, headers=self.headers, verify=False)
         mainSoup = BeautifulSoup(mainReq.text, "lxml")
-        category_title = mainSoup.find("h2", "shop-title").get_text()
+        category_title = mainSoup.find(
+            "h2", "shop-title").get_text().replace("\n", "")
         prd_total_cnt = mainSoup.find("span", id="prd_cnt_").text
         prd_total_cnt = int(re.sub(r'[^0-9]', '', prd_total_cnt))
         page_cnt = math.ceil(prd_total_cnt / 60)
+        append_log('category_title: ' + str(category_title))
+        append_log('prd_total_cnt: ' + str(prd_total_cnt))
+        append_log('page_cnt: ' + str(page_cnt))
+
+        print('category_title: ' + str(category_title))
         print('prd_total_cnt: ' + str(prd_total_cnt))
         print('page_cnt: ' + str(page_cnt))
 

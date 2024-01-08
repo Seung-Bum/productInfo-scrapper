@@ -28,6 +28,9 @@
     . 포인트메이크업  
     http://localhost:5000/extract?sectid=1660623
 
+    . 고체/기타 향수
+    1661642
+
 * 페이지 정보 base64 encoding 예시  
   eyJwYWdlTnVtYmVyIjo3Nywic2VsZWN0ZWQiOiJvcHQtcGFnZSJ9
 
