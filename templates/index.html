@@ -1,16 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Product Search</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Real-time Update</title>
   </head>
   <body>
-    <h1>Product Search</h1>
-    <form action="/extract" method="get">
-      <input placeholder="Search for a setid" required name="sectid" /><br />
-      <input placeholder="Enter your email" required name="email" />
-      <button>search</button>
-    </form>
-
+    <h1>Task Progress</h1>
     <div id="progress"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>

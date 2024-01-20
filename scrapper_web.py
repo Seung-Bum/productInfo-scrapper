@@ -1,33 +1,24 @@
 import math
-import requests
 import re
-from bs4 import BeautifulSoup
-from utilBase64 import encodingBase64
+import urllib3
+from util.utilBase64 import encodingBase64
+from util.utilSoup import make_soup
+urllib3.disable_warnings()  # SSL error 방지
 
 
 class get_product_info_class_web:
-
     idx = 0
-    headers = {
-        "User-agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36',
-        "Accept-Language": 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
-        "Accept-Encoding": 'gzip, deflate, br',
-        "Cache-Control": 'no-cache',
-        "Sec-Fetch-Site": 'same-site',
-        "Sec-Fetch-Mode": 'no-cors',
-        "Sec-Fetch-Dest": 'script',
-    }
 
     def get_product_page(self, param):
         sectid = param['sectid']
         mainUrl = f'https://www.gsshop.com/shop/sect/sectM.gs?sectid={sectid}'
-        mainReq = requests.get(mainUrl, headers=self.headers, verify=False)
-        mainSoup = BeautifulSoup(mainReq.text, "lxml")
+        mainSoup = make_soup(mainUrl)
         category_title = mainSoup.find("h2", "shop-title").get_text()
-        prd_total_cnt = mainSoup.find("span", id="prd_cnt_").text
+        prd_total_cnt = mainSoup.find("span", id="prd_cnt_").text  # 전체 상품수 카운트
         prd_total_cnt = int(re.sub(r'[^0-9]', '', prd_total_cnt))
+        # 전체 상품수 / 한페이지의 상품 갯수 = 전체 페이지 (전체 페이지를 blind 해놔서 이렇게 구해야함)
         page_cnt = math.ceil(prd_total_cnt / 60)
-        print('prd_total_cnt: ' + str(prd_total_cnt))
+        print('product_total: ' + str(prd_total_cnt))
         print('page_cnt: ' + str(page_cnt))
 
         product_info_list = []
@@ -45,12 +36,11 @@ class get_product_info_class_web:
 
             # for문이 끝날때 다시 숫자를 var로 변경함
             page = page.replace(str(i), 'var')
-        return product_info_list, category_title
+        return category_title, product_info_list
 
     def get_product_list(self, url):
         rsltList = []
-        req = requests.get(url, headers=self.headers, verify=False)
-        soup = BeautifulSoup(req.text, "lxml")
+        soup = make_soup(url)
         buttonTags = soup.find_all('button', 'link-new-tab')
         buttonTags_len = len(buttonTags)
         print('  .buttonTags len : ' + str(buttonTags_len))
@@ -75,16 +65,16 @@ class get_product_info_class_web:
             rsltList.append(product_info)
         return rsltList
 
-    def get_product_info(self, url):  # 상품 url을 받아서 상품의 타이틀과 상태를 리턴한다.
-        req = requests.get(url, headers=self.headers, verify=False)
-        soup = BeautifulSoup(req.text, "lxml")
+    def get_product_info(self, url):  # 상품 url을 받아서 상품의 타이틀과 상태를 리턴한다. 품절 상품만 리턴
         url = url[0:int(url.find('\''))]
+        soup = make_soup(url)
         title = soup.find("p", "product-title").text
         try:
             status = soup.find("span", "gs-btn red color-only gient").text
             print("  .title : " + title)
             print("  .status : " + status)
-            return {'idx': self.idx, 'title': title, 'status': status, 'link': url}
+            if (status == '품절'):
+                return {'idx': self.idx, 'title': title, 'status': status, 'link': url}
         except:
-            print("  .NoneType Error")
-            return {'idx': self.idx, 'title': title, 'status': 'OtherStatus', 'link': url}
+            print("  .NoneType Error")  # 버튼의 형태가 바로구매, 품절이 아닌 다른 상태
+            # return {'idx': self.idx, 'title': title, 'status': 'OtherStatus', 'link': url}
