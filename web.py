@@ -23,8 +23,7 @@ def productAllExtract():
     param['to_mail'] = to_mail
     print("sectid : " + str(sectid))
     print("to_mail : " + str(to_mail))
-    category_title, product_info_list = get_product_info_class_web().get_product_page(
-        param)
+    category_title, product_info_list = get_product_info_class_web().get_product_page(param)
     makeExcel(category_title, product_info_list)
     sendEmail(to_mail)
     return render_template("report.html", title=category_title, rslt_list=product_info_list)
