@@ -9,7 +9,7 @@ socketio = SocketIO(app)
 
 @app.route('/')
 def index():
-    return render_template('socketioTest.html')
+    return render_template('index.html')
 
 
 def background_thread():

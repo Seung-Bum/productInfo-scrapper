@@ -1,9 +1,11 @@
 from scrapper_web import get_product_info_class_web
 from flask import Flask, render_template, request
+from flask_socketio import SocketIO, emit
 from util.utilExcel import makeExcel
 from util.utilMail import sendEmail
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 
 
 @app.route("/")
@@ -31,4 +33,7 @@ def productAllExtract():
 
 # @app은 아래 설정보다 위에 있어야 작동함
 if __name__ == '__main__':
-    app.run('0.0.0.0', port=5000, debug=True)
+    # app.run('0.0.0.0', port=5000, debug=True)
+
+    # 소켓IO 서버 실행
+    socketio.run(app, debug=True)

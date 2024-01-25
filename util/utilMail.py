@@ -1,4 +1,4 @@
-import utilBase64
+# import utilBase64
 import os
 import smtplib  # SMTP 사용을 위한 모듈
 import re  # Regular Expression을 활용하기 위한 모듈
@@ -12,7 +12,7 @@ from email.utils import formatdate
 
 
 # 로그인 정보
-my_account = utilBase64.decodingBase64('c2I5MTAxMjZAZ21haWwuY29t')
+my_account = ""  # utilBase64.decodingBase64('c2I5MTAxMjZAZ21haWwuY29t')
 my_password = ""
 
 # 메일을 받을 계정(입력받음)
