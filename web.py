@@ -1,10 +1,11 @@
-import time
+import threading
+import urllib3
 from scrapper_web import get_product_info_class_web
 from flask import Flask, render_template, request
-from flask_socketio import SocketIO, emit
 from util.utilExcel import makeExcel
 from util.utilMail import sendEmail
-import threading
+from flask_socketio import SocketIO, emit
+urllib3.disable_warnings()  # SSL error 방지
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -27,17 +28,18 @@ def productAllExtract():
     param['to_mail'] = to_mail
     print("sectid : " + str(sectid))
     print("to_mail : " + str(to_mail))
-    category_title, product_info_list = get_product_info_class_web().get_product_page(param)
+    category_title, product_info_list = get_product_info_class_web.get_product_page(
+        param)
     makeExcel(category_title, product_info_list)
     sendEmail(to_mail)
     return render_template("report.html", title=category_title, rslt_list=product_info_list)
 
 
 def background_thread():
-    for i in range(1, 11):
-        # 1초마다 클라이언트에 현재 카운트 값을 전송
-        socketio.emit('update_count', i)
-        time.sleep(1)
+    # for i in range(1, 11):
+    # 1초마다 클라이언트에 현재 카운트 값을 전송
+    socketio.emit('update_count', 'hi')
+    # time.sleep(1)
 
 
 # @app은 아래 설정보다 위에 있어야 작동함

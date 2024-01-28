@@ -16,6 +16,7 @@ class get_product_info_class_web:
         category_title = mainSoup.find("h2", "shop-title").get_text()
         prd_total_cnt = mainSoup.find("span", id="prd_cnt_").text  # 전체 상품수 카운트
         prd_total_cnt = int(re.sub(r'[^0-9]', '', prd_total_cnt))
+
         # 전체 상품수 / 한페이지의 상품 갯수 = 전체 페이지 (전체 페이지를 blind 해놔서 이렇게 구해야함)
         page_cnt = math.ceil(prd_total_cnt / 60)
         print('product_total: ' + str(prd_total_cnt))
