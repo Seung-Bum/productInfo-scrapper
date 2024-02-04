@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Example</title>
+</head>
+<body>
+    <h1>Number from Server:</h1>
+    <div id="output"></div>
+
+    <script>
+        const outputElement = document.getElementById('output');
+
+        async function connectWebSocket() {
+            const socket = new WebSocket('ws://localhost:8765');
+
+            socket.onmessage = function(event) {
+                const message = event.data;
+                outputElement.innerHTML += `<p>${message}</p>`;
+            };
+
+            socket.onclose = function(event) {
+                if (event.wasClean) {
+                    console.log(`Connection closed cleanly, code=${event.code}, reason=${event.reason}`);
+                } else {
+                    console.error('Connection died');
+                }
+            };
+
+            socket.onerror = function(error) {
+                console.error(`Error: ${error.message}`);
+            };
+        }
+
+        connectWebSocket();
+    </script>
+</body>
+</html>
