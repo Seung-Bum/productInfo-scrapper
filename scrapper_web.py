@@ -32,7 +32,7 @@ class get_product_info_class_web:
             print("  .page : " + page)
             print("  .requetUrl : " + requetUrl)
 
-            # 상세 진열 페이지의 데이터를 모두 담는다 (page1List[a, b] + page2List[c, d] = resultList[a, b, c, d])
+            # (품절 상품만)상세 진열 페이지의 데이터를 모두 담는다 (리스트 합침: page1List[a, b] + page2List[c, d] = resultList[a, b, c, d])
             product_info_list += self.get_product_list(requetUrl)
 
             # for문이 끝날때 다시 숫자를 var로 변경함
@@ -74,7 +74,8 @@ class get_product_info_class_web:
             status = soup.find("span", "gs-btn red color-only gient").text
             print("  .title : " + title)
             print("  .status : " + status)
-            if (status == '품절'):
+
+            if (status == '품절'):  # 상품이 품절일 경우에만 return
                 return {'idx': self.idx, 'title': title, 'status': status, 'link': url}
         except:
             print("  .NoneType Error")  # 버튼의 형태가 바로구매, 품절이 아닌 다른 상태
