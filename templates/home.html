@@ -22,6 +22,32 @@
     <div id="countContainer"></div>
 
     <script>
+      // API 요청 메서드
+      function mainApiRequet() {
+        // API 엔드포인트 설정 (로컬 호스트에 맞게 수정해주세요)
+        var apiUrl = 'http://localhost:5000/productExtract';
+
+        // 폼 요소 가져오기
+        var form = document.getElementById('apiForm');
+
+        // 폼의 파라미터 값 가져오기
+        var sectid = form.elements.param1.value;
+        var email = form.elements.param2.value;
+
+        // main Url 완성하기
+        var mainUrl = 'https://www.gsshop.com/shop/sect/sectM.gs?sectid=';
+        mainUrl.concat(sectid);
+
+        // 보낼 파라미터 설정
+        var params = {
+          mainUrl: mainUrl,
+        };
+
+        // URL에 파라미터 추가
+        var urlWithParams = new URL(apiUrl);
+        urlWithParams.search = new URLSearchParams(params).toString();
+      }
+
       function makeApiRequest() {
         // API 엔드포인트 설정 (로컬 호스트에 맞게 수정해주세요)
         var apiUrl = 'http://localhost:5000/extract';
@@ -71,11 +97,9 @@
             errorHtml += '<p>' + error.message + '</p>';
             resultContainer.innerHTML = errorHtml;
           });
-
-        countApiRequest();
       }
 
-      function countApiRequest() {
+      function secondCountApiRequest() {
         for (var i = 1; i <= 10; i++) {
           setTimeout(function () {
             //console.log(number);
