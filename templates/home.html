@@ -25,29 +25,29 @@
       // API 요청 메서드
       function mainApiRequet() {
         // API 엔드포인트 설정 (로컬 호스트에 맞게 수정해주세요)
-        var apiUrl = 'http://localhost:5000/productExtract';
+        let apiUrl = 'http://localhost:5000/productExtract';
 
         // 폼 요소 가져오기
-        var form = document.getElementById('apiForm');
+        let form = document.getElementById('apiForm');
 
         // 폼의 파라미터 값 가져오기
-        var sectid = form.elements.param1.value;
-        var email = form.elements.param2.value;
+        let sectid = form.elements.param1.value;
+        let email = form.elements.param2.value;
 
         // main Url 완성하기
-        var mainUrl =
+        let mainUrl =
           'https://www.gsshop.com/shop/sect/sectM.gs?sectid=' + sectid;
-        console.log(mainUrl);
+        console.log('mainUrl: ' + mainUrl);
 
         // 보낼 파라미터 설정
-        var params = {
+        let params = {
           mainUrl: mainUrl,
           sectid: sectid,
           email: email,
         };
 
         // URL에 파라미터 추가
-        var urlWithParams = new URL(apiUrl);
+        let urlWithParams = new URL(apiUrl);
         urlWithParams.search = new URLSearchParams(params).toString();
 
         // fetch를 사용하여 API에 GET 요청 보내기
@@ -65,22 +65,28 @@
             //console.log('API 응답:', data);
 
             // 결과를 동적으로 생성한 HTML로 출력
-            var resultHtml = '<p>API 응답:</p>';
+            let resultHtml = '<p>API 응답:</p>';
             resultHtml += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
             resultContainer.innerHTML = resultHtml;
 
-            //sleep(3000)
-            //  .then(() => console.log('after'))
-            //  .then(() => console.log('done!'));
+            //getProductStatus(productListParsing(getProductList(data)));
 
-            getProductStatus(productListParsing(getProductList(data)));
+            // 1. 전체 product 추출
+            let productList = getProductList(data);
+
+            // 2. 페이지별 product 추출 (60개씩)
+            let productListParsingRslt = productListParsing(productList);
+
+            // 3. 페이지별 60개의 상품들의 상태값 추출
+            setTimeout(() => getProductStatus(productListParsingRslt), 3000);
+            //let productInfo = getProductStatus(productListParsingRslt);
           })
           .catch((error) => {
             // 오류가 발생했을 때의 처리
             console.error('API 오류:', error.message);
 
             // 오류 메시지를 동적으로 생성한 HTML로 출력
-            var errorHtml = '<p>API 오류:</p>';
+            let errorHtml = '<p>API 오류:</p>';
             errorHtml += '<p>' + error.message + '</p>';
             resultContainer.innerHTML = errorHtml;
           });
@@ -93,10 +99,10 @@
         const page_cnt = data['page_cnt'];
         const prd_total_cnt = data['prd_total_cnt'];
 
-        var urlArr = [];
+        let urlArr = [];
         for (let i = 1; i < page_cnt + 1; i++) {
-          var page = '{"pageNumber":var,"selected":"opt-page"}';
-          var subUrl =
+          let page = '{"pageNumber":var,"selected":"opt-page"}';
+          let subUrl =
             'https://www.gsshop.com/shop/sect/sectM.gs?sectid=' +
             sectid +
             '&eh=';
@@ -105,7 +111,7 @@
           let pageEncoding = encodeUnicode(page).toString();
           let requetUrl = subUrl + pageEncoding;
           //console.log('  .page : ' + page);
-          //console.log('  .requetUrl : ' + requetUrl);
+          //console.logconsole.log('  .requetUrl : ' + requetUrl);
 
           let urlObj = {};
           urlObj.page = i.toString();
@@ -115,21 +121,22 @@
           //for문이 끝날때 다시 숫자를 var로 변경함
           page = page.replace(i.toString(), 'var');
         }
-        //console.log(urlArr);
+
+        urlArr.forEach((obj) => console.log(obj));
         return urlArr;
       }
 
+      // 상품 리스트 60개 담기
       function productListParsing(urlList) {
-        let apiUrl = 'http://localhost:5000/getProductList';
+        let urlListLength = urlList.length;
+        console.log('Total Page Num: ' + urlListLength);
 
+        let apiUrl = 'http://localhost:5000/getProductList';
         let urlArr = [];
-        let page = '';
-        let requetUrl = '';
-        for (let i = 0; i < urlList.length; i++) {
-          page = urlList[i]['page'];
-          requetUrl = urlList[i]['requetUrl'];
-          //console.log('page: ' + page);
-          //console.log('requetUrl: ' + requetUrl);
+        let urlObj1 = {};
+        for (let i = 0; i < urlListLength; i++) {
+          let page = urlList[i]['page'];
+          let requetUrl = urlList[i]['requetUrl'];
 
           // 보낼 파라미터 설정
           let params = {
@@ -139,10 +146,11 @@
 
           // URL에 파라미터 추가
           // 루프 돌면서 fetch 하는데 fetch 하는 메서드를 따로 동기로 메서드로 만들어서 실행해야할듯
-
           let urlWithParams = new URL(apiUrl);
           urlWithParams.search = new URLSearchParams(params).toString();
 
+          //console.log('page: ' + page);
+          //console.log('requetUrl: ' + requetUrl);
           fetch(urlWithParams)
             .then((response) => {
               // 응답이 성공적인지 확인
@@ -153,50 +161,52 @@
               return response.json();
             })
             .then((data) => {
-              // 성공적으로 데이터를 받아왔을 때의 처리
-              //console.log('API 응답:', data);
-
               // 결과를 동적으로 생성한 HTML로 출력
-              var resultHtml = '<p>API 응답:</p>';
-              resultHtml += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
-              resultContainer.innerHTML = resultHtml;
+              //var resultHtml = '<p>API 응답:</p>';
+              //resultHtml += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+              //resultContainer.innerHTML = resultHtml;
 
-              urlArr.push(data);
-              //productListParsing(getProductList(data));
+              // 여기서 상품 리스트 60개씩 담음
+              let urlObj1 = {};
+              urlObj1.page = i + 1;
+              urlObj1.urlList = data;
+              urlArr.push(urlObj1);
             })
             .catch((error) => {
               // 오류가 발생했을 때의 처리
               console.error('API 오류:', error.message);
 
               // 오류 메시지를 동적으로 생성한 HTML로 출력
-              var errorHtml = '<p>API 오류:</p>';
+              let errorHtml = '<p>API 오류:</p>';
               errorHtml += '<p>' + error.message + '</p>';
               resultContainer.innerHTML = errorHtml;
             });
-        }
-        console.log('urlArr:');
+        } // for End
+
         console.log(urlArr);
         return urlArr;
       }
 
+      // 상품 정보 한개씩 상태 파악(60개 중)
       function getProductStatus(productUrlList) {
-        //console.log(productUrlList);
+        let resultHtml = '';
         let apiUrl = 'http://localhost:5000/getProductStatus';
 
         // 보낼 파라미터 설정
         let product = [];
         let productList = [];
-        productList = productUrlList[0];
 
         // 각 페이지 루프
-        console.log('각 페이지 루프');
-        for (let i = 0; i < productList.length; i++) {
-          product = productList[i];
+        let productUrlListLength = productUrlList.length;
+        console.log('각 페이지 루프: ' + productUrlListLength);
+        for (let i = 0; i < productUrlListLength; i++) {
+          product = productUrlList[i]['urlList'];
+          let page = productUrlList[i]['page'];
 
-          // 각 페이지의 상품들 루프
-          console.log('page:' + i);
+          // 각 페이지의 상품들 루프 (ex. 1페이지의 60개의 상품들 루프)
+          //console.log('page:' + i);
           for (let j = 0; j < product.length; j++) {
-            console.log(product[j]);
+            //console.log('product: ' + product[j]);
             let param = {
               requetUrl: product[j],
             };
@@ -216,13 +226,12 @@
               })
               .then((data) => {
                 // 성공적으로 데이터를 받아왔을 때의 처리
-                console.log('API 응답:', data);
+                console.log(page + 'page / ' + j + '번 상품: ' + data);
 
                 // 결과를 동적으로 생성한 HTML로 출력
-                var resultHtml = '<p>API 응답:</p>';
+                resultHtml = '<p>API 응답:</p><br></br>';
                 resultHtml +=
                   '<pre>' + JSON.stringify(data, null, 2) + '</pre><br></br>';
-                resultContainer.innerHTML = resultHtml;
               })
               .catch((error) => {
                 // 오류가 발생했을 때의 처리
@@ -235,6 +244,7 @@
               });
           }
         }
+        resultContainer.innerHTML = resultHtml;
       }
 
       // base64 인코딩
