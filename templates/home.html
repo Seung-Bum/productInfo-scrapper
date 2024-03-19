@@ -65,9 +65,9 @@
             //console.log('API 응답:', data);
 
             // 결과를 동적으로 생성한 HTML로 출력
-            let resultHtml = '<p>API 응답:</p>';
-            resultHtml += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
-            resultContainer.innerHTML = resultHtml;
+            //let resultHtml = '<p>API 응답:</p>';
+            //resultHtml += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            //resultContainer.innerHTML = resultHtml;
 
             //getProductStatus(productListParsing(getProductList(data)));
 
@@ -78,7 +78,8 @@
             let productListParsingRslt = productListParsing(productList);
 
             // 3. 페이지별 60개의 상품들의 상태값 추출
-            setTimeout(() => getProductStatus(productListParsingRslt), 3000);
+            resultContainer.innerHTML = '<p>Loading...</p>';
+            setTimeout(() => getProductStatus(productListParsingRslt), 10000);
             //let productInfo = getProductStatus(productListParsingRslt);
           })
           .catch((error) => {
@@ -197,9 +198,8 @@
         let productList = [];
 
         // 각 페이지 루프
-        let productUrlListLength = productUrlList.length;
-        console.log('각 페이지 루프: ' + productUrlListLength);
-        for (let i = 0; i < productUrlListLength; i++) {
+        console.log('루프 진행할 페이지 수: ' + productUrlList.length);
+        for (let i = 0; i < productUrlList.length; i++) {
           product = productUrlList[i]['urlList'];
           let page = productUrlList[i]['page'];
 
@@ -229,9 +229,11 @@
                 console.log(page + 'page / ' + j + '번 상품: ' + data);
 
                 // 결과를 동적으로 생성한 HTML로 출력
-                resultHtml = '<p>API 응답:</p><br></br>';
+                resultHtml = '<p>API 응답:</p></br>';
                 resultHtml +=
-                  '<pre>' + JSON.stringify(data, null, 2) + '</pre><br></br>';
+                  '<pre>' + JSON.stringify(data, null, 2) + '</pre></br>';
+
+                resultContainer.innerHTML = resultHtml;
               })
               .catch((error) => {
                 // 오류가 발생했을 때의 처리
@@ -244,7 +246,6 @@
               });
           }
         }
-        resultContainer.innerHTML = resultHtml;
       }
 
       // base64 인코딩
