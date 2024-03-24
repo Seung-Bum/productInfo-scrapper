@@ -191,15 +191,34 @@
       // 상품 정보 한개씩 상태 파악(60개 중)
       function getProductStatus(productUrlList) {
         let resultHtml = '';
+        let progressHtml = '';
         let apiUrl = 'http://localhost:5000/getProductStatus';
 
         // 보낼 파라미터 설정
         let product = [];
         let productList = [];
 
+        // 화면에 진행사항 표시 할 내용
+        let totalProductPage = productUrlList.length;
+        console.log('totalProductPage: ' + totalProductPage);
+
+        let lastPageList = [];
+        let lastPageProductCnt = 0;
+        for (let k = 0; k < totalProductPage; k++) {
+          if (productUrlList[k]['page'] == totalProductPage) {
+            lastPageList = productUrlList[totalProductPage - 1]['urlList']; // total page는 12이지만 Array는 0부터라 -1함
+            lastPageProductCnt = lastPageList.length;
+            console.log('lastPageProductCnt: ' + lastPageProductCnt);
+          }
+        }
+
+        let tatalProductCnt = (totalProductPage - 1) * 60 + lastPageProductCnt;
+        console.log('tatalProductCnt: ' + tatalProductCnt);
+        let productCnt = 0;
+
         // 각 페이지 루프
-        console.log('루프 진행할 페이지 수: ' + productUrlList.length);
-        for (let i = 0; i < productUrlList.length; i++) {
+        console.log('루프 진행할 페이지 수: ' + totalProductPage);
+        for (let i = 0; i < totalProductPage; i++) {
           product = productUrlList[i]['urlList'];
           let page = productUrlList[i]['page'];
 
@@ -226,13 +245,17 @@
               })
               .then((data) => {
                 // 성공적으로 데이터를 받아왔을 때의 처리
-                console.log(page + 'page / ' + j + '번 상품: ' + data);
-
                 // 결과를 동적으로 생성한 HTML로 출력
+                console.log(page + 'page / ' + j + '번 상품: ' + data);
+                productCnt += 1;
+                progressHtml =
+                  '<p>' + productCnt + '/' + tatalProductCnt + '</p>';
+
                 resultHtml = '<p>API 응답:</p></br>';
                 resultHtml +=
                   '<pre>' + JSON.stringify(data, null, 2) + '</pre></br>';
 
+                countContainer.innerHTML = progressHtml;
                 resultContainer.innerHTML = resultHtml;
               })
               .catch((error) => {
@@ -245,7 +268,7 @@
                 resultContainer.innerHTML = errorHtml;
               });
           }
-        }
+        } // for End
       }
 
       // base64 인코딩
