@@ -206,7 +206,7 @@
         let lastPageProductCnt = 0;
         for (let k = 0; k < totalProductPage; k++) {
           if (productUrlList[k]['page'] == totalProductPage) {
-            lastPageList = productUrlList[totalProductPage - 1]['urlList']; // total page는 12이지만 Array는 0부터라 -1함
+            lastPageList = productUrlList[k]['urlList']; // total page는 12이지만 Array는 0부터라 -1함
             lastPageProductCnt = lastPageList.length;
             console.log('lastPageProductCnt: ' + lastPageProductCnt);
           }
