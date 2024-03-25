@@ -32,7 +32,7 @@ def productExtract():
     # print('page_cnt: ' + str(page_cnt))
 
     print("productExtract 종료")
-    return {'category_title': category_title, 'prd_total_cnt': prd_total_cnt, 'page_cnt': page_cnt, 'sectid': sectid}
+    return {'category_title': category_title, 'prd_total_cnt': prd_total_cnt, 'page_cnt': page_cnt, 'sectid': sectid, 'email': email}
 
 
 @app.route("/getProductList")

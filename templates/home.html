@@ -71,6 +71,9 @@
 
             //getProductStatus(productListParsing(getProductList(data)));
 
+            // 데이터 보내 email 저장
+            const email = data['email'];
+
             // 1. 전체 product 추출
             let productList = getProductList(data);
 
@@ -79,7 +82,7 @@
 
             // 3. 페이지별 60개의 상품들의 상태값 추출
             resultContainer.innerHTML = '<p>Loading...</p>';
-            setTimeout(() => getProductStatus(productListParsingRslt), 10000);
+            setTimeout(() => getProductStatus(productListParsingRslt), 12000);
             //let productInfo = getProductStatus(productListParsingRslt);
           })
           .catch((error) => {
@@ -94,6 +97,8 @@
       }
 
       function getProductList(data) {
+        // 페이지 url 만들기
+
         // 특정 key에 대한 값 가져오기
         const sectid = data['sectid'];
         const category_title = data['category_title'];
